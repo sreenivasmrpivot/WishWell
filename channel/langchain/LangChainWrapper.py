@@ -47,11 +47,11 @@ class LangChainWrapper:
     def _save_document_in_vdb(self):
         # create vector db and save the document in vector database
         self.db = FAISS.from_documents(self.texts, self.embedding)
-        self.db.save_local("faiss")
+        self.db.save_local("./vector-store/langchain/faiss")
 
     def _load_document_from_vdb(self):
         # load the document from vector database
-        self.db = FAISS.load_local("faiss", self.embedding)
+        self.db = FAISS.load_local("./vector-store/langchain/faiss", self.embedding)
 
     def _load_llm(self):
         self.llm = CTransformers(model=get_model_path(self.wish),

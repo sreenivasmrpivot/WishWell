@@ -1,7 +1,9 @@
 from llama_index import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, ServiceContext, set_global_service_context, LLMPredictor
 from llama_index.llms import HuggingFaceLLM, LlamaCPP
 from llama_index.prompts.prompts import SimpleInputPrompt
-from llama_index.embeddings import HuggingFaceEmbedding
+# from sentence_transformers import SentenceTransformer
+# from llama_index.embeddings import HuggingFaceEmbedding
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from helper import get_document_path, get_embedding_model_path, get_model_path, get_tokenizer_path
 
 from models import EmbeddingModelEnum, ModelLocationEnum, Wish
@@ -16,7 +18,7 @@ class LlamaIndexWrapper:
 
     query_wrapper_prompt = SimpleInputPrompt("[INST]{prompt}[/INST]")
 
-    vectorStorePath = "./llama-index/storage"
+    vectorStorePath = "./vector-store/llama-index"
 
     def __init__(self, wish: Wish):
         self.wish = wish
@@ -27,13 +29,15 @@ class LlamaIndexWrapper:
         self._persist_document_ondisk()
         self._load_index_from_disk()
         self._load_query_engine()
-        self._load_chat_bot()
+        # self._load_chat_bot()
 
     def _load_embbedding(self):
-        self.embedding = HuggingFaceEmbedding(model_name=get_embedding_model_path(self.wish))
+        # self.embedding = HuggingFaceEmbedding(model_name=get_embedding_model_path(self.wish))
+        # self.embedding = SentenceTransformer(get_embedding_model_path(self.wish))
+        self.embedding = HuggingFaceEmbeddings(model_name=get_embedding_model_path(self.wish))
     
     def _load_service_context(self):
-        if self.wish.location == ModelLocationEnum.local:
+        if self.wish.modelLocation == ModelLocationEnum.local:
             llm = LlamaCPP(model_path=get_model_path(self.wish), verbose=True)
             llm_predictor = LLMPredictor(llm=llm)
             self.service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, embed_model=self.embedding, chunk_size=1024, chunk_overlap=128)
@@ -74,8 +78,8 @@ class LlamaIndexWrapper:
         self.query_chat_bot = self.index.as_chat_bot()
 
     def run(self):
-        grant = self.query_engine.query(self.wish.whisper)
-        return grant
+        output = self.query_engine.query(self.wish.whisper)
+        return output.response
     
 # if __name__ == '__main__':
 #     wish = Wish(location="local", documentName="Business Conduct.pdf", modelName="Llama", channel="Llamaindex", whisper="what is Legal Holds?")

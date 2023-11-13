@@ -13,4 +13,3 @@ langchain
 sentence-transformers
 faiss-cpu
 # vllm # needs CUDA
-# accelerate>=0.20.3
