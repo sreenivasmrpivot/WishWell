@@ -1,0 +1,16 @@
+llama-index
+pypdf
+openai
+transformers
+accelerate
+llama-cpp-python
+fastapi
+uvicorn
+python-multipart
+typing
+CTransformers
+langchain
+sentence-transformers
+faiss-cpu
+# vllm # needs CUDA
+# accelerate>=0.20.3
