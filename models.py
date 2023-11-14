@@ -4,7 +4,7 @@ from enum import Enum
 class ModelLocationEnum(str, Enum):
     local = "local"
     huggingface = "huggingface"
-    vllm = "vllm"
+    vmwarevllmapi = "vmwarevllmapi"
 
 class ChannelEnum(str, Enum):
     # Langchain is a framework for developing applications powered by language models
@@ -24,7 +24,7 @@ class ModelPathEnum(str, Enum):
     LlamaHuggingface = "NousResearch/Llama-2-7b-chat-hf"
     MistralHuggingface = "NousResearch/Mistral-1000m-hf" # update this
     LlamaVllm = "meta-llama/Llama-2-13b-chat-hf"
-    MistralVllm = "mistralai/Mistral-7B-v0.1"
+    MistralVllm = "mistralai/Mistral-7B-Instruct-v0.1"
 
 class TokenizerPathEnum(str, Enum):
     LlamaHuggingface = "NousResearch/Llama-2-7b-chat-hf"

@@ -45,8 +45,12 @@ async def list_documents():
 
 @app.post("/wish/")
 async def make_a_wish_to_genie(wish: Wish):
-    grant = process_wish(wish)
-    return grant
+    try:
+        grant = process_wish(wish)
+        return grant
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while processing the wish.")
+
 
 @app.get("/")
 async def main():

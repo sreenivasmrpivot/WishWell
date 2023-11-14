@@ -6,8 +6,8 @@ def get_model_path(wish):
         (ModelLocationEnum.local, ModelEnum.Mistral): ModelPathEnum.MistralLocal,
         (ModelLocationEnum.huggingface, ModelEnum.Llama): ModelPathEnum.LlamaHuggingface,
         (ModelLocationEnum.huggingface, ModelEnum.Mistral): ModelPathEnum.MistralHuggingface,
-        (ModelLocationEnum.vllm, ModelEnum.Llama): ModelPathEnum.LlamaVllm,
-        (ModelLocationEnum.vllm, ModelEnum.Mistral): ModelPathEnum.MistralVllm,
+        (ModelLocationEnum.vmwarevllmapi, ModelEnum.Llama): ModelPathEnum.LlamaVllm,
+        (ModelLocationEnum.vmwarevllmapi, ModelEnum.Mistral): ModelPathEnum.MistralVllm,
     }
 
     return switcher.get((wish.modelLocation, wish.modelName), None)
