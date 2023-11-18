@@ -21,7 +21,7 @@ def get_tokenizer_path(wish):
         (ModelLocationEnum.huggingface, ModelEnum.Llama): TokenizerPathEnum.LlamaHuggingface,
     }
 
-    return switcher.get((wish.location, wish.modelName), None)
+    return switcher.get((wish.modelLocation, wish.modelName), None)
 
 def get_document_path(wish):
     return f"./data/{wish.documentName}"

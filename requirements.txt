@@ -11,5 +11,5 @@ typing
 CTransformers
 langchain
 sentence-transformers
-faiss-cpu
+faiss-gpu
 # vllm # needs CUDA
