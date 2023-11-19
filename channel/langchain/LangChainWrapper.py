@@ -8,7 +8,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
 from helper import get_document_path, get_embedding_model_path, get_model_path
-from models import Wish
+from models import VectorDatabaseEnum, Wish
 
 class LangChainWrapper:
 
@@ -65,13 +65,13 @@ class LangChainWrapper:
 
     def _load_document_from_vdb(self):
         # load the document from vector database
-        if self.wish.vectorDatabase == "FAISS":
+        if self.wish.vectorDatabase == VectorDatabaseEnum.FAISS:
             # FAISS as a vector database
             self.db = FAISS.load_local(
                 "./vector-store/langchain/faiss", 
                 self.embedding
             )
-        elif self.wish.vectorDatabase == "Milvus":
+        elif self.wish.vectorDatabase == VectorDatabaseEnum.Milvus:
             # Milvus as a vector database
             self.db = Milvus(
                 self.embedding,
