@@ -12,4 +12,5 @@ CTransformers
 langchain
 sentence-transformers
 faiss-gpu
+pymilvus
 # vllm # needs CUDA

@@ -30,12 +30,16 @@ class TokenizerPathEnum(str, Enum):
     LlamaHuggingface = "NousResearch/Llama-2-7b-chat-hf"
 
 class EmbeddingModelEnum(str, Enum):
-    LlamaEmbedding = "intfloat/e5-large-v2" #"sentence-transformers/all-MiniLM-L6-v2"
+    LlamaEmbedding = "sentence-transformers/all-MiniLM-L6-v2"
 
 class DeviceEnum(str, Enum):
     CPU = "cpu"
     GPU = "gpu"
     CUDA = "cuda"
+
+class VectorDatabaseEnum(str, Enum):
+    FAISS = "faiss"
+    Milvus = "milvus"
 
 class Wish(BaseModel):
     device: DeviceEnum
@@ -43,4 +47,5 @@ class Wish(BaseModel):
     documentName: str
     modelName: ModelEnum
     channel: ChannelEnum
+    vectorDatabase: VectorDatabaseEnum
     whisper: str

@@ -3,6 +3,7 @@ from langchain.llms import CTransformers
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
+from langchain.vectorstores import Milvus
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
@@ -46,12 +47,37 @@ class LangChainWrapper:
 
     def _save_document_in_vdb(self):
         # create vector db and save the document in vector database
-        self.db = FAISS.from_documents(self.texts, self.embedding)
-        self.db.save_local("./vector-store/langchain/faiss")
+        if self.wish.vectorDatabase == "FAISS":
+            # FAISS as a vector database
+            self.db = FAISS.from_documents(
+                self.texts, 
+                self.embedding
+            )
+            self.db.save_local("./vector-store/langchain/faiss")
+        elif self.wish.vectorDatabase == "Milvus":
+            # Milvus as a vector database
+            self.db = Milvus.from_documents(
+                self.texts, 
+                self.embedding, 
+                collection_name=self.wish.documentName.replace(" ", "_"),
+                connection_args={"host": "127.0.0.1", "port": "19530"}
+            )
 
     def _load_document_from_vdb(self):
         # load the document from vector database
-        self.db = FAISS.load_local("./vector-store/langchain/faiss", self.embedding)
+        if self.wish.vectorDatabase == "FAISS":
+            # FAISS as a vector database
+            self.db = FAISS.load_local(
+                "./vector-store/langchain/faiss", 
+                self.embedding
+            )
+        elif self.wish.vectorDatabase == "Milvus":
+            # Milvus as a vector database
+            self.db = Milvus(
+                self.embedding,
+                collection_name=self.wish.documentName.replace(" ", "_"),
+                connection_args={"host": "127.0.0.1", "port": "19530"}
+            )
 
     def _load_llm(self):
         self.llm = CTransformers(model=get_model_path(self.wish),
