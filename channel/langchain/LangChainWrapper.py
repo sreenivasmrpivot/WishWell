@@ -59,7 +59,7 @@ class LangChainWrapper:
             self.db = Milvus.from_documents(
                 self.texts, 
                 self.embedding, 
-                collection_name=self.wish.documentName.replace(" ", "_"),
+                collection_name=self.wish.documentName.replace(" ", "_").replace(".", "_"),
                 connection_args={"host": "127.0.0.1", "port": "19530"}
             )
 
@@ -75,7 +75,7 @@ class LangChainWrapper:
             # Milvus as a vector database
             self.db = Milvus(
                 self.embedding,
-                collection_name=self.wish.documentName.replace(" ", "_"),
+                collection_name=self.wish.documentName.replace(" ", "_").replace(".", "_"),
                 connection_args={"host": "127.0.0.1", "port": "19530"}
             )
 
