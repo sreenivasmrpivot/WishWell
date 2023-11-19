@@ -33,7 +33,7 @@ def main(args):
     """The main function."""
     # Start time
     start_time = time.time()
-    wish = Wish(device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, whisper=args.whisper)
+    wish = Wish(device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
     grant = process_wish(wish)
     print(grant)
     # End time
@@ -71,6 +71,11 @@ if __name__ == '__main__':
     parser.add_argument(
         "--channel", type=str, default="Langchain", 
         help="Name of the channel."
+    )
+
+    parser.add_argument(
+        "--vectorDatabase", type=str, default="FAISS", 
+        help="Name of the vector database."
     )
 
     parser.add_argument(
