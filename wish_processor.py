@@ -64,6 +64,11 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
+        "--config_file", type=str, default=None,
+        help="Path to an alternate configuration file"
+    )
+    
+    parser.add_argument(
         "--device", type=str, default="cpu", 
         help="Device to run the model on."
     )
