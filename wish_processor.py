@@ -6,6 +6,10 @@ from channel.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
 import time
 import argparse
 
+from common.config import setup_logging_from_args, setup_logging_from_file
+from common.logging_decorator import log_entry_exit, SensitiveData
+
+@log_entry_exit()
 def process_wish(wish: Wish):
     if wish.channel == "Langchain":
         langChainWrapper = LangChainWrapper(wish)
@@ -31,6 +35,12 @@ def process_wish(wish: Wish):
 
 def main(args):
     """The main function."""
+
+    if args.config_file:
+        setup_logging_from_file(args.config_file)
+    else:
+        setup_logging_from_args(args.log_level)
+
     # Start time
     start_time = time.time()
     wish = Wish(device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
@@ -47,6 +57,11 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--log_level", type=str, default="INFO", 
+        help="Set the logging level (e.g., DEBUG, INFO, WARNING)"
+    )
 
     parser.add_argument(
         "--device", type=str, default="cpu", 

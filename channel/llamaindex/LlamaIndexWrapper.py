@@ -8,6 +8,9 @@ from helper import get_document_path, get_embedding_model_path, get_model_path, 
 
 from models import EmbeddingModelEnum, ModelLocationEnum, Wish
 
+from common.logging_decorator import auto_log_entry_exit
+
+@auto_log_entry_exit()
 class LlamaIndexWrapper:
 
     # prepare the template we will use when prompting the AI

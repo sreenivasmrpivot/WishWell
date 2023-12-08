@@ -5,6 +5,9 @@ from helper import get_model_path
 
 from models import Wish
 
+from common.logging_decorator import auto_log_entry_exit
+
+@auto_log_entry_exit()
 class VmwareVllmApiWrapper:
     
     cred_file = "./creds.json"

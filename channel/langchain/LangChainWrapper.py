@@ -10,6 +10,9 @@ from langchain.chains import RetrievalQA
 from helper import get_document_path, get_embedding_model_path, get_model_path
 from models import VectorDatabaseEnum, Wish
 
+from common.logging_decorator import auto_log_entry_exit
+
+@auto_log_entry_exit()
 class LangChainWrapper:
 
     def __init__(self, wish: Wish):
