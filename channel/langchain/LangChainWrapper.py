@@ -1,3 +1,4 @@
+import os
 from langchain.document_loaders import PyPDFLoader
 from langchain.llms import CTransformers
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -24,6 +25,8 @@ class LangChainWrapper:
         Helpful answer:
         """
         self.wish = wish
+        self.faiss_path = os.path.join(self.wish.rootPath, "vector-store/langchain/faiss")
+        print(self.faiss_path)
         self._load_embbedding()
         self._load_document()
         self._split_document()
@@ -50,14 +53,14 @@ class LangChainWrapper:
 
     def _save_document_in_vdb(self):
         # create vector db and save the document in vector database
-        if self.wish.vectorDatabase == "FAISS":
+        if self.wish.vectorDatabase == VectorDatabaseEnum.FAISS:
             # FAISS as a vector database
             self.db = FAISS.from_documents(
                 self.texts, 
                 self.embedding
             )
-            self.db.save_local("./vector-store/langchain/faiss")
-        elif self.wish.vectorDatabase == "Milvus":
+            self.db.save_local(self.faiss_path)
+        elif self.wish.vectorDatabase == VectorDatabaseEnum.Milvus:
             # Milvus as a vector database
             self.db = Milvus.from_documents(
                 self.texts, 
@@ -71,7 +74,7 @@ class LangChainWrapper:
         if self.wish.vectorDatabase == VectorDatabaseEnum.FAISS:
             # FAISS as a vector database
             self.db = FAISS.load_local(
-                "./vector-store/langchain/faiss", 
+                self.faiss_path, 
                 self.embedding
             )
         elif self.wish.vectorDatabase == VectorDatabaseEnum.Milvus:

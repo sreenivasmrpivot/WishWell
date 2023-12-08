@@ -42,6 +42,7 @@ class VectorDatabaseEnum(str, Enum):
     Milvus = "milvus"
 
 class Wish(BaseModel):
+    rootPath: str
     device: DeviceEnum
     modelLocation: ModelLocationEnum
     documentName: str

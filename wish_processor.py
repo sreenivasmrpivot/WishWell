@@ -1,3 +1,4 @@
+import os
 from models import DeviceEnum, Wish
 from channel.langchain.LangChainWrapper import LangChainWrapper
 from channel.llamaindex.LlamaIndexWrapper import LlamaIndexWrapper
@@ -33,9 +34,21 @@ def process_wish(wish: Wish):
     else:
         raise Exception("Channel not supported")
 
+@log_entry_exit()
+def create_directory_structure():
+    # Get the directory of the current script
+    root_path = os.path.dirname(os.path.abspath(__file__))
+
+    # Define the relative path for the new directory structure
+    # new_dir_path = os.path.join(script_dir, "vector-store/langchain/faiss")
+
+    # Create the directory structure if it doesn't exist
+    # os.makedirs(new_dir_path, exist_ok=True)
+
+    return root_path
+
 def main(args):
     """The main function."""
-
     if args.config_file:
         setup_logging_from_file(args.config_file)
     else:
@@ -43,7 +56,7 @@ def main(args):
 
     # Start time
     start_time = time.time()
-    wish = Wish(device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
+    wish = Wish(rootPath=create_directory_structure(), device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
     grant = process_wish(wish)
     print(grant)
     # End time
@@ -67,7 +80,7 @@ if __name__ == '__main__':
         "--config_file", type=str, default=None,
         help="Path to an alternate configuration file"
     )
-    
+
     parser.add_argument(
         "--device", type=str, default="cpu", 
         help="Device to run the model on."
