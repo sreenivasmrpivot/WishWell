@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+python-multipart
+langchain
+sentence-transformers
+llama-index
+pymilvus
+openai
+pypdf
+transformers
+accelerate
+llama-cpp-python
+typing
+CTransformers
+faiss-cpu
+# faiss-gpu
+# vllm # needs CUDA

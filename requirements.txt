@@ -1,16 +1,24 @@
-llama-index
-pypdf
-openai
-transformers
-accelerate
-llama-cpp-python
-fastapi
-uvicorn
-python-multipart
-typing
-CTransformers
-langchain
-sentence-transformers
-faiss-gpu
-pymilvus
+# pydantic
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+langchain==0.0.330
+# tritonclient[all]==2.39.0 missing
+# unstructured[all-docs]==0.10.28 missing
+sentence-transformers==2.2.2
+llama-index==0.8.28
+dataclass-wizard==0.22.2
+opencv-python==4.8.0.74
+llama-hub==0.0.43
+pymilvus==2.3.1
+openai==1.2.0
+# openai==0.28.1
+pypdf # additional - using unstructured instead
+transformers # additional
+accelerate # additional
+llama-cpp-python # additional
+typing # additional
+CTransformers # additional
+faiss-cpu
+# faiss-gpu # additional
 # vllm # needs CUDA
