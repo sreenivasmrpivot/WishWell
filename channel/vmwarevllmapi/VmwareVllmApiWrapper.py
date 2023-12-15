@@ -28,20 +28,20 @@ class VmwareVllmApiWrapper:
     
     def run(self):
         # Option 1: You may use chat completions to access the LLMs as below 
-        # completions = self.client.chat.completions.create(
-        #     model=get_model_path(self.wish),
-        #     messages=[
-        #         {
-        #             "role": "user",
-        #             "content": self.wish.whisper,
-        #         },
-        #     ],
-        # )        
+        completions = self.client.chat.completions.create(
+            model=get_model_path(self.wish),
+            messages=[
+                {
+                    "role": "user",
+                    "content": self.wish.whisper,
+                },
+            ],
+        )        
 
         # Option 2: You may directly use the completions to access the LLMs as below
-        completions = self.client.completions.create(
-            model=get_model_path(self.wish),
-            prompt=self.wish.whisper
-        )        
+        # completions = self.client.completions.create(
+        #     model=get_model_path(self.wish),
+        #     prompt=self.wish.whisper
+        # )        
         grant = completions.choices[0].text
         return grant
