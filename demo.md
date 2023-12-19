@@ -96,3 +96,8 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
     Note: 
         Provide a code walk through for Llamaindex RAG. 
 ***
+
+## Try querying model with RAG from CLI
+```zsh
+python3 wish_processor.py --device cpu --modelLocation local --documentName "BCOM 2024 benefits.pdf" --modelName Llama --channel Langchain --vectorDatabase faiss --whisper "What is the coverage for Orthodontia with Broadcom?"
+```
