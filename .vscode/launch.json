@@ -5,16 +5,36 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "host": "localhost",
+            "port": 50067,
+            "python.pythonPath": "~/anaconda3/envs/wishwell/bin/python",
+            "args": [
+                "--device", "cpu",
+                "--modelLocation", "local",
+                "--documentName", "BCOM 2024 benefits.pdf",
+                "--modelName", "Mistral",
+                "--channel", "Langchain",
+                "--vectorDatabase", "faiss",
+                "--whisper", "What is the coverage for Orthodontia with Broadcom?"
+            ]            
+        },
+        {
             "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
             "cwd": "${workspaceFolder}",
             "args": [
-              "main:app",
-              "--reload",
-              "--port", //these arg are optional
-              "3003"
+                "main:app",
+                "--reload",
+                "--port", //these arg are optional
+                "3003"
             ]
         }
     ]
