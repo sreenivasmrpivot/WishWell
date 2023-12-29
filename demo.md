@@ -37,7 +37,8 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
   "modelLocation": "vmwarevllmapi",
   "documentName": "BCOM 2024 benefits.pdf",
   "modelName": "Llama",
-  "channel": "VmwareVllmApi",
+  "integrator": "VmwareVllmApi",
+  "inferenceServer": "Vllm",
   "whisper": "What is the currency of Qatar?"
 }'
 ```
@@ -50,7 +51,8 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
   "modelLocation": "vmwarevllmapi",
   "documentName": "BCOM 2024 benefits.pdf",
   "modelName": "Llama",
-  "channel": "VmwareVllmApi",
+  "integrator": "VmwareVllmApi",
+  "inferenceServer": "Vllm",
   "whisper": "What is the coverage for Orthodontia with Broadcom?"
 }'
 ```
@@ -68,7 +70,8 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
   "modelLocation": "local",
   "documentName": "BCOM 2024 benefits.pdf",
   "modelName": "Llama",
-  "channel": "Langchain",
+  "integrator": "Langchain",
+  "inferenceServer": "Vllm",
   "whisper": "What is the coverage for Orthodontia with Broadcom?"
 }'
 ```
@@ -87,7 +90,8 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
   "modelLocation": "local",
   "documentName": "BCOM 2024 benefits.pdf",
   "modelName": "Llama",
-  "channel": "Llamaindex",
+  "integrator": "Llamaindex",
+  "inferenceServer": "Vllm",
   "whisper": "What is the coverage for Orthodontia with Broadcom?"
 }'
 ```
@@ -99,9 +103,9 @@ curl -X 'POST'   'http://127.0.0.1:3003/wish/'   -H 'accept: application/json'  
 
 ## Try querying model with RAG from CLI
 ```zsh
-python3 wish_processor.py --device cpu --modelLocation local --documentName "BCOM 2024 benefits.pdf" --modelName Llama --channel Langchain --vectorDatabase faiss --whisper "What is the coverage for Orthodontia with Broadcom?"
+python3 wish_processor.py --device cpu --modelLocation local --documentName "BCOM 2024 benefits.pdf" --modelName Llama --integrator Langchain --inferenceServer Vllm --vectorDatabase faiss --whisper "What is the coverage for Orthodontia with Broadcom?"
 ```
 
 ```zsh
-python3 wish_processor.py --device cpu --modelLocation local --documentName "BCOM 2024 benefits.pdf" --modelName Mistral --channel Langchain --vectorDatabase faiss --whisper "What is the coverage for Orthodontia with Broadcom?"
+python3 wish_processor.py --device cpu --modelLocation local --documentName "BCOM 2024 benefits.pdf" --modelName Mistral --integrator Langchain --inferenceServer Vllm --vectorDatabase faiss --whisper "What is the coverage for Orthodontia with Broadcom?"
 ```

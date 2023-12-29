@@ -49,7 +49,7 @@ def main(args):
 
     # Start time
     start_time = time.time()
-    wish = Wish(rootPath=create_directory_structure(), device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, integrator=args.integrator, server=args.server, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
+    wish = Wish(rootPath=create_directory_structure(), device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, integrator=args.integrator, inferenceServer=args.inferenceServer, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
     grant = process_wish(wish)
     print(grant)
     # End time
@@ -100,8 +100,8 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--server", type=str, default="Vllm", 
-        help="Name of the integrator."
+        "--inferenceServer", type=str, default="LocalFile", 
+        help="Name of the inference server."
     )
 
     parser.add_argument(

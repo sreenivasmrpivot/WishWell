@@ -12,7 +12,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
 from helper import get_document_path, get_embedding_model_path, get_model_path
-from models import ServerEnum, VectorDatabaseEnum, Wish
+from models import InferenceServerEnum, VectorDatabaseEnum, Wish
 
 from common.logging_decorator import auto_log_entry_exit
 from server.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
@@ -90,7 +90,7 @@ class LangChainWrapper:
             )
 
     def _load_llm(self):
-        if self.wish.server == ServerEnum.VmwareVllmApi:
+        if self.wish.inferenceServer == InferenceServerEnum.VmwareVllmApi:
             vmwareVllmApiWrapper = VmwareVllmApiWrapper(self.wish)
             self.llm = VLLMOpenAI(
                 openai_api_key = vmwareVllmApiWrapper.api_key,
@@ -105,7 +105,7 @@ class LangChainWrapper:
                 # max_tokens=256,
                 # temperature=0.01,
             # )
-        elif self.wish.server == ServerEnum.Vllm:
+        elif self.wish.inferenceServer == InferenceServerEnum.Vllm:
             self.llm = VLLM(
                 model=get_model_path(self.wish),
                 trust_remote_code=True,  # mandatory for hf models
