@@ -1,5 +1,4 @@
 import json
-# import openai
 from openai import OpenAI
 from helper import get_model_path
 
@@ -26,22 +25,22 @@ class VmwareVllmApiWrapper:
     def _initialize_openai_client(self):
         self.client = OpenAI(api_key = self.api_key, base_url = VmwareVllmApiWrapper.endpoint) 
     
-    def run(self):
+    # def run(self):
         # Option 1: You may use chat completions to access the LLMs as below 
-        completions = self.client.chat.completions.create(
-            model=get_model_path(self.wish),
-            messages=[
-                {
-                    "role": "user",
-                    "content": self.wish.whisper,
-                },
-            ],
-        )        
+        # completions = self.client.chat.completions.create(
+            # model=get_model_path(self.wish),
+            # messages=[
+                # {
+                    # "role": "user",
+                    # "content": self.wish.whisper,
+                # },
+            # ],
+        # )        
 
         # Option 2: You may directly use the completions to access the LLMs as below
         # completions = self.client.completions.create(
-        #     model=get_model_path(self.wish),
-        #     prompt=self.wish.whisper
+            # model=get_model_path(self.wish),
+            # prompt=self.wish.whisper
         # )        
-        grant = completions.choices[0].text
-        return grant
+        # grant = completions.choices[0].text
+        # return grant

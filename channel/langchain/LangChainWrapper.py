@@ -1,6 +1,9 @@
 import os
+from re import S
 from langchain.document_loaders import PyPDFLoader
-from langchain.llms import CTransformers
+from langchain.llms import CTransformers, VLLM, VLLMOpenAI
+from langchain.chat_models import ChatOpenAI
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -9,9 +12,10 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
 from helper import get_document_path, get_embedding_model_path, get_model_path
-from models import VectorDatabaseEnum, Wish
+from models import ServerEnum, VectorDatabaseEnum, Wish
 
 from common.logging_decorator import auto_log_entry_exit
+from server.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
 
 @auto_log_entry_exit()
 class LangChainWrapper:
@@ -86,9 +90,43 @@ class LangChainWrapper:
             )
 
     def _load_llm(self):
-        self.llm = CTransformers(model=get_model_path(self.wish),
-            model_type=self.wish.modelName,
-            config={'max_new_tokens': 256, 'temperature': 0.01})
+        if self.wish.server == ServerEnum.VmwareVllmApi:
+            vmwareVllmApiWrapper = VmwareVllmApiWrapper(self.wish)
+            self.llm = VLLMOpenAI(
+                openai_api_key = vmwareVllmApiWrapper.api_key,
+                openai_api_base = vmwareVllmApiWrapper.endpoint,
+                model_name = get_model_path(self.wish),
+                model_kwargs = {"stop": ["."]},                
+            )
+            # self.llm = ChatOpenAI(
+                # openai_api_key = vmwareVllmApiWrapper.api_key,
+                # openai_api_base = vmwareVllmApiWrapper.endpoint,
+                # model = get_model_path(self.wish),
+                # max_tokens=256,
+                # temperature=0.01,
+            # )
+        elif self.wish.server == ServerEnum.Vllm:
+            self.llm = VLLM(
+                model=get_model_path(self.wish),
+                trust_remote_code=True,  # mandatory for hf models
+                max_new_tokens=256,
+                temperature=0.01,
+            )
+        # elif self.wish.server == ServerEnum.NvidiaTriton:
+            # self.llm = ChatNVIDIA(
+                # client="http://localhost:8000/v2/models/llm/versions/1/infer",
+                # top_p=0.95,
+                # model=get_model_path(self.wish),
+                # max_tokens=256,
+                # temperature=0.01,
+            # )
+        else:
+            self.llm = CTransformers(
+                model=get_model_path(self.wish),
+                model_type=self.wish.modelName,
+                config={'max_new_tokens': 256, 'temperature': 0.01}
+            )
+
         retriever = self.db.as_retriever(search_kwargs={'k': 2})
         self.prompt = PromptTemplate(
             template=self.template,

@@ -3,7 +3,7 @@ from models import DeviceEnum, Wish
 from channel.langchain.LangChainWrapper import LangChainWrapper
 from channel.llamaindex.LlamaIndexWrapper import LlamaIndexWrapper
 # from channel.vllm.VllmWrapper import VllmWrapper
-from channel.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
+# from channel.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
 import time
 import argparse
 
@@ -12,25 +12,18 @@ from common.logging_decorator import log_entry_exit, SensitiveData
 
 @log_entry_exit()
 def process_wish(wish: Wish):
-    if wish.channel == "Langchain":
+    if wish.integrator == "Langchain":
         langChainWrapper = LangChainWrapper(wish)
         grant = langChainWrapper.run()
         return grant
-    elif wish.channel == "Llamaindex":
+    elif wish.integrator == "Llamaindex":
         llamaIndexWrapper = LlamaIndexWrapper(wish)
         grant = llamaIndexWrapper.run()
         return grant
-    # elif wish.channel == "Vllm":
-        # if wish.device == DeviceEnum.CPU:
-            # raise Exception("Vllm does not work on CPU, it requires CUDA")
-        # 
-        # vllmWrapper = VllmWrapper(wish)
-        # grant = vllmWrapper.run()
+    # elif wish.integrator == "VmwareVllmApi":
+        # vmwareVllmApiWrapper = VmwareVllmApiWrapper(wish)
+        # grant = vmwareVllmApiWrapper.run()
         # return grant
-    elif wish.channel == "VmwareVllmApi":
-        vmwareVllmApiWrapper = VmwareVllmApiWrapper(wish)
-        grant = vmwareVllmApiWrapper.run()
-        return grant
     else:
         raise Exception("Channel not supported")
 
@@ -56,7 +49,7 @@ def main(args):
 
     # Start time
     start_time = time.time()
-    wish = Wish(rootPath=create_directory_structure(), device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, channel=args.channel, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
+    wish = Wish(rootPath=create_directory_structure(), device=args.device, modelLocation=args.modelLocation, documentName=args.documentName, modelName=args.modelName, integrator=args.integrator, server=args.server, vectorDatabase=args.vectorDatabase ,whisper=args.whisper)
     grant = process_wish(wish)
     print(grant)
     # End time
@@ -102,8 +95,13 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--channel", type=str, default="Langchain", 
-        help="Name of the channel."
+        "--integrator", type=str, default="Langchain", 
+        help="Name of the integrator."
+    )
+
+    parser.add_argument(
+        "--server", type=str, default="Vllm", 
+        help="Name of the integrator."
     )
 
     parser.add_argument(

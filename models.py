@@ -1,3 +1,4 @@
+from grpc import server
 from pydantic import BaseModel
 from enum import Enum
 
@@ -6,13 +7,16 @@ class ModelLocationEnum(str, Enum):
     huggingface = "huggingface"
     vmwarevllmapi = "vmwarevllmapi"
 
-class ChannelEnum(str, Enum):
+class ServerEnum(str, Enum):
+    Vllm = "Vllm"
+    VmwareVllmApi = "VmwareVllmApi"
+    NvidiaTriton = "NvidiaTriton"
+
+class IntegratorEnum(str, Enum):
     # Langchain is a framework for developing applications powered by language models
     # You can chain multiple LLMs and other sources of information together
     Langchain = "Langchain" 
     Llamaindex = "Llamaindex"
-    Vllm = "Vllm"
-    VmwareVllmApi = "VmwareVllmApi"
 
 class ModelEnum(str, Enum):
     Llama = "Llama"
@@ -58,6 +62,7 @@ class Wish(BaseModel):
     modelLocation: ModelLocationEnum
     documentName: str
     modelName: ModelEnum
-    channel: ChannelEnum
+    integrator: IntegratorEnum
+    server: ServerEnum
     vectorDatabase: VectorDatabaseEnum
     whisper: str

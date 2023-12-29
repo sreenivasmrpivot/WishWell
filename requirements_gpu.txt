@@ -21,5 +21,6 @@ typing # additional
 CTransformers # additional
 # faiss-cpu
 faiss-gpu # additional
-# vllm # needs CUDA
+vllm # needs CUDA
 torch==2.1.0
+langchain-nvidia-ai-endpoints
