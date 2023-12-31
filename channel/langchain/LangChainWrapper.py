@@ -3,7 +3,7 @@ from re import S
 from langchain.document_loaders import PyPDFLoader
 from langchain.llms import CTransformers, VLLM, VLLMOpenAI
 from langchain.chat_models import ChatOpenAI
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
+#from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -96,7 +96,7 @@ class LangChainWrapper:
                 openai_api_key = vmwareVllmApiWrapper.api_key,
                 openai_api_base = vmwareVllmApiWrapper.endpoint,
                 model_name = get_model_path(self.wish),
-                model_kwargs = {"stop": ["."]},                
+                # model_kwargs = {"stop": ["."]},                
             )
             # self.llm = ChatOpenAI(
                 # openai_api_key = vmwareVllmApiWrapper.api_key,
