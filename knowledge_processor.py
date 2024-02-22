@@ -1,30 +1,26 @@
+from ast import In
 import os
-import re
-from models import DeviceEnum, Wish
-from channel.langchain.wish_processor import WishProcessor as LCWishProcessor
-from channel.llamaindex.wish_processor import WishProcessor as LIWishProcessor
-# from channel.vllm.VllmWrapper import VllmWrapper
-# from channel.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
+
+from regex import P
+from channel.langchain.knowledge_processor import KnowledgeProcessor as LCKnowledgeProcessor
+from channel.llamaindex.knowledge_processor import KnowledgeProcessor as LIKnowledgeProcessor
 import time
 import argparse
 
 from common.config import setup_logging_from_args, setup_logging_from_file
 from common.logging_decorator import log_entry_exit, SensitiveData
+from models import Information
 
 @log_entry_exit()
-def process_wish(wish: Wish):
-    if args.integrator == "Langchain":
-        langChainWrapper = LCWishProcessor(wish)
-        grant = langChainWrapper.run()
+def acquire_knowledge(information: Information):
+    if information.integrator == "Langchain":
+        langChainWrapper = LCKnowledgeProcessor(information)
+        grant = langChainWrapper.learn()
         return grant
-    elif args.integrator == "Llamaindex":
-        llamaIndexWrapper = LIWishProcessor(wish)
-        grant = llamaIndexWrapper.run()
+    elif information.integrator == "Llamaindex":
+        llamaIndexWrapper = LIKnowledgeProcessor(information)
+        grant = llamaIndexWrapper.learn()
         return grant
-    # elif wish.integrator == "VmwareVllmApi":
-        # vmwareVllmApiWrapper = VmwareVllmApiWrapper(wish)
-        # grant = vmwareVllmApiWrapper.run()
-        # return grant
     else:
         raise Exception("Channel not supported")
 
@@ -50,17 +46,17 @@ def main(args):
 
     # Start time
     start_time = time.time()
-    wish = Wish(
+    information = Information(
         rootPath=create_directory_structure(), 
+        folderName=args.folderName,
+        documentName=args.documentName, 
         modelName=args.modelName, 
         device=args.device, 
-        vectorDatabase=args.vectorDatabase, 
-        knowledgeBaseId=args.knowledgeBaseId,
-        modelLocation=args.modelLocation, 
-        inferenceServer=args.inferenceServer, 
-        whisper=args.whisper
+        integrator=args.integrator, 
+        vectorDatabase=args.vectorDatabase ,
+        knowledgeBaseId=args.knowledgeBaseId
     )
-    grant = process_wish(wish)
+    grant = acquire_knowledge(information)
     print(grant)
     # End time
     end_time = time.time()
@@ -85,6 +81,16 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
+        "--folderName", type=str, default="data", 
+        help="Folder to get documents from."
+    )
+
+    parser.add_argument(
+        "--documentName", type=str, default="Business Conduct.pdf", 
+        help="Name of the document."
+    )
+
+    parser.add_argument(
         "--modelName", type=str, default="Llama", 
         help="Name of the model."
     )
@@ -93,11 +99,6 @@ if __name__ == '__main__':
         "--device", type=str, default="cpu", 
         help="Device to run the model on."
     )
-    
-    parser.add_argument(
-        "--modelLocation", type=str, default="local", 
-        help="Location of the model."
-    )
 
     parser.add_argument(
         "--integrator", type=str, default="Langchain", 
@@ -105,18 +106,8 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--inferenceServer", type=str, default="LocalFile", 
-        help="Name of the inference server."
-    )
-
-    parser.add_argument(
         "--vectorDatabase", type=str, default="faiss", 
         help="Name of the vector database."
-    )
-
-    parser.add_argument(
-        "--whisper", type=str, default="what is Legal Holds?", 
-        help="The question."
     )
 
     parser.add_argument(

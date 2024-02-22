@@ -15,12 +15,13 @@
             "port": 50067,
             "python.pythonPath": "~/anaconda3/envs/wishwell/bin/python",
             "args": [
-                "--device", "cpu",
-                "--modelLocation", "local",
+                "--folderName", "html",
                 "--documentName", "BCOM 2024 benefits.pdf",
                 "--modelName", "Mistral",
-                "--channel", "Langchain",
+                "--device", "cpu",
+                "--modelLocation", "local",
                 "--vectorDatabase", "faiss",
+                "--knowledgeBaseId", "123",
                 "--whisper", "What is the coverage for Orthodontia with Broadcom?"
             ]            
         },

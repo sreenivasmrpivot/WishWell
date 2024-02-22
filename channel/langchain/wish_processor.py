@@ -1,24 +1,19 @@
 import os
-from re import S
-from langchain.document_loaders import PyPDFLoader
-from langchain.llms import CTransformers, VLLM, VLLMOpenAI
-from langchain.chat_models import ChatOpenAI
+from langchain_community.llms import CTransformers, VLLM, VLLMOpenAI
 #from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.vectorstores import Milvus
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS, Milvus
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
-from helper import get_document_path, get_embedding_model_path, get_model_path
+from helper import get_embedding_model_path, get_model_path
 from models import InferenceServerEnum, VectorDatabaseEnum, Wish
 
 from common.logging_decorator import auto_log_entry_exit
 from server.vmwarevllmapi.VmwareVllmApiWrapper import VmwareVllmApiWrapper
 
 @auto_log_entry_exit()
-class LangChainWrapper:
+class WishProcessor:
 
     def __init__(self, wish: Wish):
         self.template = """Use the following pieces of information to answer the user's question.
@@ -32,46 +27,46 @@ class LangChainWrapper:
         self.faiss_path = os.path.join(self.wish.rootPath, "vector-store/langchain/faiss")
         print(self.faiss_path)
         self._load_embbedding()
-        self._load_document()
-        self._split_document()
-        self._save_document_in_vdb()
+        # self._load_document()
+        # self._split_document()
+        # self._save_document_in_vdb()
         self._load_document_from_vdb()
         self._load_llm()
 
     def _load_embbedding(self):
         self.embedding = HuggingFaceEmbeddings(
-            model_name=get_embedding_model_path(self.wish),
+            model_name=get_embedding_model_path(self.wish.modelName),
             model_kwargs={'device': self.wish.device})
         
-    def _load_document(self):
-        # load the document    
-        loader = PyPDFLoader(get_document_path(self.wish))
-        # interpret information in the documents
-        self.document = loader.load()
+    # def _load_document(self):
+    #     # load the document    
+    #     loader = PyPDFLoader(get_document_path(self.wish))
+    #     # interpret information in the documents
+    #     self.document = loader.load()
 
-    def _split_document(self):
-        # split the document into chunks
-        splitter = RecursiveCharacterTextSplitter(chunk_size=500,
-                                                  chunk_overlap=50)
-        self.texts = splitter.split_documents(self.document)
+    # def _split_document(self):
+    #     # split the document into chunks
+    #     splitter = RecursiveCharacterTextSplitter(chunk_size=500,
+    #                                               chunk_overlap=50)
+    #     self.texts = splitter.split_documents(self.document)
 
-    def _save_document_in_vdb(self):
-        # create vector db and save the document in vector database
-        if self.wish.vectorDatabase == VectorDatabaseEnum.FAISS:
-            # FAISS as a vector database
-            self.db = FAISS.from_documents(
-                self.texts, 
-                self.embedding
-            )
-            self.db.save_local(self.faiss_path)
-        elif self.wish.vectorDatabase == VectorDatabaseEnum.Milvus:
-            # Milvus as a vector database
-            self.db = Milvus.from_documents(
-                self.texts, 
-                self.embedding, 
-                collection_name=self.wish.documentName.replace(" ", "_").replace(".", "_"),
-                connection_args={"host": "127.0.0.1", "port": "19530"}
-            )
+    # def _save_document_in_vdb(self):
+    #     # create vector db and save the document in vector database
+    #     if self.wish.vectorDatabase == VectorDatabaseEnum.FAISS:
+    #         # FAISS as a vector database
+    #         self.db = FAISS.from_documents(
+    #             self.texts, 
+    #             self.embedding
+    #         )
+    #         self.db.save_local(self.faiss_path)
+    #     elif self.wish.vectorDatabase == VectorDatabaseEnum.Milvus:
+    #         # Milvus as a vector database
+    #         self.db = Milvus.from_documents(
+    #             self.texts, 
+    #             self.embedding, 
+    #             collection_name=self.wish.knowledgeBaseId,
+    #             connection_args={"host": "127.0.0.1", "port": "19530"}
+    #         )
 
     def _load_document_from_vdb(self):
         # load the document from vector database
@@ -85,7 +80,7 @@ class LangChainWrapper:
             # Milvus as a vector database
             self.db = Milvus(
                 self.embedding,
-                collection_name=self.wish.documentName.replace(" ", "_").replace(".", "_"),
+                collection_name=self.wish.knowledgeBaseId,
                 connection_args={"host": "127.0.0.1", "port": "19530"}
             )
 

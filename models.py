@@ -56,13 +56,19 @@ class VectorDatabaseEnum(str, Enum):
     Milvus = "milvus"
     Vespa = "vespa"
 
-class Wish(BaseModel):
+class ProcessorParams(BaseModel):
     rootPath: str
-    device: DeviceEnum
-    modelLocation: ModelLocationEnum
-    documentName: str
     modelName: ModelEnum
-    integrator: IntegratorEnum
-    inferenceServer: InferenceServerEnum
+    device: DeviceEnum
     vectorDatabase: VectorDatabaseEnum
+    knowledgeBaseId: str
+
+class Wish(ProcessorParams):
+    modelLocation: ModelLocationEnum
+    inferenceServer: InferenceServerEnum
     whisper: str
+
+class Information(ProcessorParams):
+    folderName: str
+    documentName: str
+    integrator: IntegratorEnum

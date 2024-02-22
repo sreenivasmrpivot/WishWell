@@ -6,12 +6,12 @@ from llama_index.prompts.prompts import SimpleInputPrompt
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from helper import get_document_path, get_embedding_model_path, get_model_path, get_tokenizer_path
 
-from models import EmbeddingModelEnum, ModelLocationEnum, Wish
+from models import EmbeddingModelEnum, Information, ModelLocationEnum, Wish
 
 from common.logging_decorator import auto_log_entry_exit
 
 @auto_log_entry_exit()
-class LlamaIndexWrapper:
+class WishProcessor:
 
     # prepare the template we will use when prompting the AI
     system_prompt = """<<SYS>>
@@ -26,10 +26,10 @@ class LlamaIndexWrapper:
     def __init__(self, wish: Wish):
         self.wish = wish
         self._load_embbedding()
-        self._load_service_context()
-        self._load_document()
-        self._persist_document_inmemory()
-        self._persist_document_ondisk()
+        # self._load_service_context()
+        # self._load_document()
+        # self._persist_document_inmemory()
+        # self._persist_document_ondisk()
         self._load_index_from_disk()
         self._load_query_engine()
         # self._load_chat_bot()
@@ -41,7 +41,7 @@ class LlamaIndexWrapper:
     
     def _load_service_context(self):
         if self.wish.modelLocation == ModelLocationEnum.local:
-            llm = LlamaCPP(model_path=get_model_path(self.wish), verbose=True)
+            llm = LlamaCPP(model_path=get_model_path(self.wish.modelName), verbose=True)
             llm_predictor = LLMPredictor(llm=llm)
             self.service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, embed_model=self.embedding, chunk_size=1024, chunk_overlap=128)
         else:
@@ -49,10 +49,10 @@ class LlamaIndexWrapper:
                 context_window=4096, 
                 max_new_tokens=256,
                 generate_kwargs={"temperature": 0.7, "do_sample": False},
-                system_prompt=LlamaIndexWrapper.system_prompt,
-                query_wrapper_prompt=LlamaIndexWrapper.query_wrapper_prompt,
-                tokenizer_name=get_tokenizer_path(self.wish),
-                model_name=get_model_path(self.wish),
+                system_prompt=WishProcessor.system_prompt,
+                query_wrapper_prompt=WishProcessor.query_wrapper_prompt,
+                tokenizer_name=str(get_tokenizer_path(self.wish)),
+                model_name=str(get_model_path(self.wish)),
                 device_map="auto",
                 stopping_ids=[50278, 50279, 50277, 1, 0],
                 tokenizer_kwargs={"max_length": 4096},
@@ -68,21 +68,21 @@ class LlamaIndexWrapper:
         self.index = VectorStoreIndex.from_documents(self.document, service_context=self.service_context) # this is just in memory
 
     def _persist_document_ondisk(self):
-        self.index.storage_context.persist(persist_dir=LlamaIndexWrapper.vectorStorePath) # this enables storing vector store on disk
+        self.index.storage_context.persist(persist_dir=WishProcessor.vectorStorePath) # this enables storing vector store on disk
 
     def _load_index_from_disk(self):
-        self.storage_context = StorageContext.from_defaults(persist_dir=LlamaIndexWrapper.vectorStorePath)
+        self.storage_context = StorageContext.from_defaults(persist_dir=WishProcessor.vectorStorePath)
         self.index = load_index_from_storage(storage_context=self.storage_context, service_context=self.service_context)
 
     def _load_query_engine(self):
         self.query_engine = self.index.as_query_engine()
 
-    def _load_chat_bot(self):
-        self.query_chat_bot = self.index.as_chat_bot()
+    # def _load_chat_bot(self):
+    #     self.query_chat_bot = self.index.as_chat_bot()
 
     def run(self):
         output = self.query_engine.query(self.wish.whisper)
-        return output.response
+        return output
     
 # if __name__ == '__main__':
 #     wish = Wish(location="local", documentName="Business Conduct.pdf", modelName="Llama", channel="Llamaindex", whisper="what is Legal Holds?")

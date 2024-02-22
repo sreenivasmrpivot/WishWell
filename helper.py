@@ -15,12 +15,12 @@ def get_model_path(wish):
 
     return switcher.get((wish.modelLocation, wish.modelName), None)
 
-def get_embedding_model_path(wish):
-    if wish.modelName == ModelEnum.Llama:
+def get_embedding_model_path(modelName):
+    if modelName == ModelEnum.Llama:
         return EmbeddingModelEnum.LlamaEmbedding
-    elif wish.modelName == ModelEnum.Mistral:
+    elif modelName == ModelEnum.Mistral:
         return EmbeddingModelEnum.MistralEmbedding
-    elif wish.modelName == ModelEnum.Mixtral:
+    elif modelName == ModelEnum.Mixtral:
         return EmbeddingModelEnum.MixtralEmbedding
 
 def get_tokenizer_path(wish):
@@ -30,5 +30,5 @@ def get_tokenizer_path(wish):
 
     return switcher.get((wish.modelLocation, wish.modelName), None)
 
-def get_document_path(wish):
-    return f"./data/{wish.documentName}"
+def get_document_path(processorParams):
+    return f"./data/{processorParams.folderName}"
